@@ -1,4 +1,3 @@
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,39 +12,20 @@ public class Category {
     private final String mWantedPath;
     private final String mTitle;
     private List<Program> mPrograms;
-    private File mCategoryFolder;
 
     public Category(String title, String realPath, String wantedPath) {
-        mTitle = title;
+        mTitle = Utils.removeRestrictedSymbols(title);;
         mRealPath = realPath;
         mWantedPath = wantedPath;
         mPrograms = new ArrayList<>();
     }
 
-    public File create() {
-        if (mCategoryFolder != null) {
-            return mCategoryFolder;
-        }
-        mCategoryFolder = new File(mWantedPath + "/" + mTitle + "/");
-        if (!mCategoryFolder.mkdirs()) {
-            System.out.println("Error createFolder " + mWantedPath + "/" + mTitle + "/");
-        }
-        return mCategoryFolder;
-    }
-
     public void addPrograms(String file) {
         List<String> programIds = getProgrammId(file);
         for (String programId : programIds) {
-            Program program = new Program(mRealPath, mCategoryFolder.getAbsolutePath());
+            Program program = new Program(mRealPath, mWantedPath + "/" + mTitle + "/");
             program.addId(programId);
             System.out.println("addPrograms " + programId);
-            File programFile = program.create();
-            programFile.mkdirs();
-            if (programFile.exists()) {
-                System.out.println("createFolder " + program.getTitle());
-            } else {
-                System.out.println("Error createFolder " + programId);
-            }
             program.addRecords();
             mPrograms.add(program);
         }
@@ -56,8 +36,10 @@ public class Category {
         String programId;
         Utils utils = new Utils();
         do {
-            programId = utils.findSubstring(file, "<a href=\"../programms/", "\">", true);
-            ids.add(programId);
+            programId = utils.findSubstring(file, "<h4><a href=\"../programms/", "\">", true);
+            if (programId != null) {
+                ids.add(programId);
+            }
         } while (programId != null);
         return ids;
     }

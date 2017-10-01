@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +7,11 @@ import java.util.List;
  */
 public class Program {
 
-    public static final String PATH = "podcasts";
+    public static final String PATH = "podcasts/";
 
     private final String mRealPath;
     private final String mWantedPath;
 
-    private File mProgramFolder;
     private final File[] mPodcastFiles;
     private List<Record> mRecords;
     private String mId;
@@ -25,8 +23,7 @@ public class Program {
         mRealPath = realPath;
         mWantedPath = wantedPath;
 
-        mProgramFolder = new File(mRealPath + "/" + PATH);
-        mPodcastFiles = mProgramFolder.listFiles();
+        mPodcastFiles = new File(mRealPath + "/" + PATH).listFiles();
         mRecords = new ArrayList<>();
     }
 
@@ -35,41 +32,12 @@ public class Program {
         mPodcastFile = findPodcastById(mId);
     }
 
-    public File create() {
-        File podcastFile = findPodcastById(mId);
-        if (podcastFile == null) {
-            System.out.println("error podcast not found " + mId);
-        }
-
-        if (mPodcastFile == null) {
-            System.out.println("error podcastString " + mId);
-        }
-
-        mTitle = getProgramTitle(getPodcastString());
-        File programFolder = createProgramFolder();
-        return programFolder;
-    }
-
     private String getPodcastString() {
         if (mPodcastString != null) {
             return mPodcastString;
         }
-        return Utils.fileToString(mPodcastFile);
-    }
-
-    private File createProgramFolder() {
-        if (mProgramFolder != null) {
-            return mProgramFolder;
-        }
-        mProgramFolder = new File(mWantedPath + "/" + mTitle + "/");
-        try {
-            mProgramFolder.createNewFile();
-        } catch (IOException e) {
-            System.out.println("Error createFolder " + mWantedPath + "/" + mTitle + "/");
-            e.printStackTrace();
-        }
-        mProgramFolder.mkdirs();
-        return mProgramFolder;
+        mPodcastString = Utils.fileToString(mPodcastFile);
+        return mPodcastString;
     }
 
     private String getProgramTitle(String podcastString) {
@@ -85,14 +53,12 @@ public class Program {
         return null;
     }
 
-    public String getTitle() {
-        return mTitle;
-    }
-
     public void addRecords() {
         String podcastItemsString = getPodcastItemsString();
+        mTitle = getProgramTitle(getPodcastString());
+        mTitle = Utils.removeRestrictedSymbols(mTitle);
         if (podcastItemsString == null) {
-            System.out.println("Error addRecords <item> not found " + mWantedPath + "/" + mTitle + "/");
+            Utils.addToEmptyFolder(mWantedPath + "/" + mTitle + "/");
             return;
         }
 
@@ -103,7 +69,7 @@ public class Program {
             recordTitle = utils.findSubstring(podcastItemsString, "<title>", "</title>", true);
             recordLink = utils.findSubstring(podcastItemsString, "<guid isPermaLink=\"true\">http://www.neva.fm/", "</guid>", true);
             if (recordTitle != null && recordLink != null) {
-                Record record = new Record(recordTitle, mRealPath + "/" + recordLink, mWantedPath + "/" + mTitle + "/");
+                Record record = new Record(recordTitle, mRealPath + "/" + recordLink, mWantedPath + mTitle + "/");
                 record.create();
                 mRecords.add(record);
             }
