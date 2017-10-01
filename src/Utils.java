@@ -1,6 +1,7 @@
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created by n551jm on 01.10.2017.
@@ -45,21 +46,14 @@ public class Utils {
     }
 
     public static String fileToString(File file) {
-//        String content = null;
-//        try {
-//            content = new String(Files.readAllBytes(Paths.get(file.getPath())));
-//        } catch (IOException e) {
-//            System.out.println("Error on create create");
-//            e.printStackTrace();
-//            return null;
-//        }
-//        return content;
+        String content = null;
         try {
-            return new Scanner(file).next();
-        } catch (FileNotFoundException e) {
+            content = new String(Files.readAllBytes(Paths.get(file.getPath())), "UTF-8");
+        } catch (IOException e) {
             System.out.println("Error on create create");
             e.printStackTrace();
+            return null;
         }
-        return null;
+        return content;
     }
 }

@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +27,8 @@ public class Category {
             return mCategoryFolder;
         }
         mCategoryFolder = new File(mWantedPath + "/" + mTitle + "/");
-        try {
-            mCategoryFolder.createNewFile();
-        } catch (IOException e) {
+        if (!mCategoryFolder.mkdirs()) {
             System.out.println("Error createFolder " + mWantedPath + "/" + mTitle + "/");
-            e.printStackTrace();
         }
         return mCategoryFolder;
     }
