@@ -3,10 +3,15 @@
  */
 public class Main {
 
-    private final static String REAL_PATH = "D:\\www.neva.fm\\";
-    private final static String WANTED_PATH = "D:\\experimentsNeva";
+    private final static String REAL_PATH = "D:/www.neva.fm";
+    private final static String WANTED_PATH = "D:/experimentsNeva";
 
     public static final void main(String[] args) {
-        new Neva(REAL_PATH, WANTED_PATH).create();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new Neva(REAL_PATH, WANTED_PATH).create();
+            }
+        }).start();
     }
 }

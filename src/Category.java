@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,12 @@ public class Category {
             return mCategoryFolder;
         }
         mCategoryFolder = new File(mWantedPath + "/" + mTitle + "/");
+        try {
+            mCategoryFolder.createNewFile();
+        } catch (IOException e) {
+            System.out.println("Error createFolder " + mWantedPath + "/" + mTitle + "/");
+            e.printStackTrace();
+        }
         return mCategoryFolder;
     }
 
@@ -43,6 +50,7 @@ public class Category {
             } else {
                 System.out.println("Error createFolder " + programId);
             }
+            program.addRecords();
             mPrograms.add(program);
         }
     }
@@ -50,8 +58,9 @@ public class Category {
     private List<String> getProgrammId(String file) {
         List<String> ids = new ArrayList<>();
         String programId;
+        Utils utils = new Utils();
         do {
-            programId = Utils.findSubstring(file, "<a href=\"../programms/", "\">");
+            programId = utils.findSubstring(file, "<a href=\"../programms/", "\">", true);
             ids.add(programId);
         } while (programId != null);
         return ids;
