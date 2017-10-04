@@ -77,6 +77,6 @@ public class Program {
     }
 
     private String getPodcastItemsString() {
-        return Utils.findSubstring(getPodcastString(), "<item>", "</item>");
+        return Utils.findSubstring(getPodcastString(), "<item>", "</channel>");
     }
 }

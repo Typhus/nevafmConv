@@ -17,7 +17,16 @@ public class Record {
 
     public void create() {
         new File(mWantedPath).mkdirs();
-
+        File file = new File(mRealPath);
+        if (!file.exists()) {
+            System.out.println("create record !file.exists() " + mRealPath);
+            return;
+        }
+        File wantedFile = new File(mWantedPath + mTitle + ".mp3");
+        if (wantedFile.exists()) {
+            System.out.println("create record wantedFile.exists() " + mWantedPath);
+            return;
+        }
         try {
             InputStream in = new FileInputStream(mRealPath);
             OutputStream out = new FileOutputStream(mWantedPath + mTitle + ".mp3");
@@ -42,11 +51,9 @@ public class Record {
 
     private void removeFile(String realPath) {
         File file = new File(realPath);
-        if (file.exists()) {
-            boolean delete = file.delete();
-            if (!delete) {
-                System.out.println("Error file not deleted " + realPath);
-            }
+        boolean delete = file.delete();
+        if (!delete) {
+            System.out.println("Error file not deleted " + realPath);
         }
     }
 

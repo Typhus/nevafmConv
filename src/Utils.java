@@ -82,7 +82,7 @@ public class Utils {
     }
 
     public static String removeRestrictedSymbols(String title) {
-        title =  title.replaceAll("[\\\\/:*?\"<>|]", "");
+        title =  title.replaceAll("[\\\\/:*?\";<>|]", "");
         title = title.replaceAll("&quot", "");
         if (title.length() > 30) {
             title = title.substring(0, 30);
@@ -220,9 +220,13 @@ public class Utils {
         sCharMap.put("Р¤", "Ф");
         sCharMap.put("РҐ", "Х");
         sCharMap.put("Р§", "Ч");
+        sCharMap.put("РЁ", "Ш");
+        sCharMap.put("Р©", "Щ");
 
         sCharMap.put("Р«", "Ы");
-
+        sCharMap.put("Р¬", "Ь");
+        sCharMap.put("Р\u00AD", "Э");
+        sCharMap.put("Р®", "Ю");
         sCharMap.put("РЇ", "Я");
     }
 
