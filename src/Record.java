@@ -33,9 +33,20 @@ public class Record {
             in.close();
             out.close();
             System.out.println("create record " + mWantedPath + mTitle + ".mp3" + " from " + mRealPath);
+            removeFile(mRealPath);
         } catch (IOException e) {
             System.out.println("Error while creating record " + mWantedPath + mTitle + ".mp3" + " from " + mRealPath);
             e.printStackTrace();
+        }
+    }
+
+    private void removeFile(String realPath) {
+        File file = new File(realPath);
+        if (file.exists()) {
+            boolean delete = file.delete();
+            if (!delete) {
+                System.out.println("Error file not deleted " + realPath);
+            }
         }
     }
 

@@ -3,8 +3,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by n551jm on 01.10.2017.
@@ -82,8 +81,13 @@ public class Utils {
         }
     }
 
-    public static String removeRestrictedSymbols(String path) {
-        return path.replaceAll("[\\\\/:*?\"<>|]", "");
+    public static String removeRestrictedSymbols(String title) {
+        title =  title.replaceAll("[\\\\/:*?\"<>|]", "");
+        title = title.replaceAll("&quot", "");
+        if (title.length() > 30) {
+            title = title.substring(0, 30);
+        }
+        return title;
     }
 
     public static void renameFile(String path) {
@@ -114,4 +118,112 @@ public class Utils {
             }
         }
     }
+
+    public static void decodeFiles(String path) {
+        File[] files = new File(path).listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                decodeFiles(file.getAbsolutePath());
+            } else {
+                decodeFile(file.getAbsolutePath());
+            }
+        }
+    }
+
+    public static void decodeFile(String path) {
+        String[] segments = path.split("/");
+        String fileName = segments[segments.length - 1];
+        fileName = decode(fileName);
+        if (fileName == null) {
+            System.out.println("decodeFile errors CharMap empty");
+            return;
+        }
+        File realFile = new File(path);
+
+        int lastIndex = path.lastIndexOf("/") + 1;
+        path = path.substring(0, lastIndex);
+        path += fileName;
+        realFile.renameTo(new File(path));
+        System.out.println("decodeFile from " + segments[segments.length - 1] + " to " + fileName);
+    }
+
+    private static String decode(String fileName) {
+        if (sCharMap.size() == 0) {
+            return null;
+        }
+        String result = fileName;
+        Object[] keySet = sCharMap.keySet().toArray();
+        for (int i = 0; i < keySet.length; i++) {
+            String charr = (String) keySet[i];
+            result = result.replace(charr, sCharMap.get(charr));
+        }
+
+        return result;
+    }
+
+    private static Map<String, String> sCharMap = new HashMap<>();
+    static {
+        sCharMap.put("Р°", "а");
+        sCharMap.put("Р±", "б");
+        sCharMap.put("РІ", "в");
+        sCharMap.put("Рі", "г");
+        sCharMap.put("Рґ", "д");
+        sCharMap.put("Рµ", "е");
+        sCharMap.put("С%91", "ё");
+        sCharMap.put("Р¶", "ж");
+        sCharMap.put("Р·", "з");
+        sCharMap.put("Рё", "и");
+        sCharMap.put("Р№", "й");
+        sCharMap.put("Рє", "к");
+        sCharMap.put("Р»", "л");
+        sCharMap.put("Рј", "м");
+        sCharMap.put("РЅ", "н");
+        sCharMap.put("Рѕ", "о");
+        sCharMap.put("Рї", "п");
+        sCharMap.put("С%80", "р");
+        sCharMap.put("С%81", "с");
+        sCharMap.put("С%82", "т");
+        sCharMap.put("С%83", "у");
+        sCharMap.put("С%84", "ф");
+        sCharMap.put("С%85", "х");
+        sCharMap.put("С%86", "ц");
+        sCharMap.put("С%87", "ч");
+        sCharMap.put("С%88", "ш");
+        sCharMap.put("С%89", "щ");
+        sCharMap.put("С%8A", "ъ");
+        sCharMap.put("С%8B", "ы");
+        sCharMap.put("С%8C", "ь");
+        sCharMap.put("С%8D", "э");
+        sCharMap.put("С%8E", "ю");
+        sCharMap.put("С%8F", "я");
+
+        sCharMap.put("Р%90", "А");
+        sCharMap.put("Р%91", "Б");
+        sCharMap.put("Р%92", "В");
+        sCharMap.put("Р%93", "Г");
+        sCharMap.put("Р%94", "Д");
+        sCharMap.put("Р%95", "Е");
+        sCharMap.put("Р%96", "Ж");
+        sCharMap.put("Р%97", "З");
+        sCharMap.put("Р%98", "И");
+        sCharMap.put("Р%99", "Й");
+        sCharMap.put("Р%9A", "К");
+        sCharMap.put("Р%9B", "Л");
+        sCharMap.put("Р%9C", "М");
+        sCharMap.put("Р%9D", "Н");
+        sCharMap.put("Р%9E", "О");
+        sCharMap.put("Р%9F", "П");
+        sCharMap.put("Р ", "Р");
+        sCharMap.put("РЎ", "С");
+        sCharMap.put("Рў", "Т");
+        sCharMap.put("РЈ", "У");
+        sCharMap.put("Р¤", "Ф");
+        sCharMap.put("РҐ", "Х");
+        sCharMap.put("Р§", "Ч");
+
+        sCharMap.put("Р«", "Ы");
+
+        sCharMap.put("РЇ", "Я");
+    }
+
 }
